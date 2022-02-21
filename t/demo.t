@@ -31,3 +31,32 @@ REWRITED
 uri is /rewrited
 --- no_error_log
 [error]
+
+
+
+=== TEST 2: rewrite by ngx_http_rewrite_module
+--- config
+    server_rewrite_by_lua_block {
+        ngx.log(ngx.INFO, "uri is ", ngx.var.uri)
+    }
+
+    return 503;
+
+    location /rewrited {
+        content_by_lua_block {
+            ngx.say("REWRITED")
+        }
+    }
+
+    location /ok {
+       	content_by_lua_block {
+       	    ngx.say("OK")
+       	}
+    }
+--- request
+GET /lua
+--- error_code: 503
+--- error_log
+--- no_error_log
+[error]
+[info]
